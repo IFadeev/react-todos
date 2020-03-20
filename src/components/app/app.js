@@ -4,16 +4,19 @@ import AppHeader from '../app-header';
 import SearchPanel from '../search-panel';
 import TodoList from '../todo-list';
 import ItemStatusFilter from '../item-status-filter';
+import AddPanel from '../add-panel';
 
 import './app.css';
 
 class App extends Component {
 
+  newID = 4;
+
   state = {
     todoData: [
-      { label: 'Drink Coffee', important: false, id: 1 },
-      { label: 'Make Awesome App', important: true, id: 2 },
-      { label: 'Have a lunch', important: false, id: 3 }
+      { label: 'Drink Coffee', important: false, done: false, id: 1 },
+      { label: 'Make Awesome App', important: false, done: false, id: 2 },
+      { label: 'Have a lunch', important: false, done: false, id: 3 }
     ]
   }
 
@@ -30,6 +33,29 @@ class App extends Component {
     })  
   }
 
+  addItem = label => {
+    const newTodo = {label: label, important: false, id: this.newID++}
+
+    this.setState( ({todoData}) => {
+
+      const newArray = [newTodo, ...todoData]
+
+      return {
+        todoData: newArray
+      }
+    })
+
+    console.log(`Added: ${label}`)
+  }
+
+  onMarkImportant = id => {
+    console.log(`Toggle Impo ${id}`)
+  }
+
+  onMarkDone = id => {
+    console.log(`Toggle Done ${id}`)
+  }
+
   render() {
 
     return (
@@ -39,8 +65,13 @@ class App extends Component {
           <SearchPanel />
           <ItemStatusFilter />
         </div>
-  
-        <TodoList todos={this.state.todoData} onDeleted = {this.deleteItem} />
+        <TodoList todos           = {this.state.todoData} 
+                  onDeleted       = {this.deleteItem} 
+                  onMarkImportant = {this.onMarkImportant} 
+                  onMarkDone      = {this.onMarkDone}/>
+                  
+        <AddPanel todoData        = {this.state.todoData} onAdded = {this.addItem}/>
+    
       </div>
     );
   };
